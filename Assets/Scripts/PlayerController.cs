@@ -19,11 +19,15 @@ public class PlayerController : MonoBehaviour
     private float jumpForce;
 
     // 상태 변수
+    private bool isWalk = false;
     private bool isRun = false;
     private bool isCrouch = false;
     private bool isGround = true;
 
-    //앉았을 때 얼마나 앉을 지 결정하는 변수
+    // 움직임 체크 변수
+    private Vector3 lastPos;
+
+    // 앉았을 때 얼마나 앉을 지 결정하는 변수
     [SerializeField]
     private float crouchPosY;
     private float originPosY;
@@ -44,19 +48,44 @@ public class PlayerController : MonoBehaviour
     // 필요한 컴포넌트
     [SerializeField]
     private Camera theCamera;
-
     private Rigidbody myRigid;
+    private GunController theGunController;
+    private CrossHair theCrossHair;
 
-    // Start is called before the first frame update
+
 
     void Start()
     {
         //theCamera = FindObjectOfType<Camera>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         myRigid = GetComponent<Rigidbody>();
+        theGunController = FindObjectOfType<GunController>();
+        theCrossHair = FindObjectOfType<CrossHair>();
+
+
         applySpeed = walkSpeed;
         originPosY = theCamera.transform.localPosition.y;// 플레이어가 앉는것이 아니라 카메라가 앉는것(플레이어에 자식이므로 localPos)
         applyCrouchPosY = originPosY;
+        MoveCheck();
+    }
+
+    private void MoveCheck()
+    {
+        if (!isRun && !isCrouch)
+        {
+            if (Vector3.Distance(lastPos, transform.position) > 0.01f)
+            {
+                isWalk = true;
+            }
+            else
+            {
+                isWalk = false;
+            }
+            theCrossHair.WalkingAnimation(isWalk);
+            lastPos = transform.position;
+            Debug.Log(Vector3.Distance(lastPos, transform.position));
+        }
+
     }
 
     // Update is called once per frame
@@ -82,6 +111,7 @@ public class PlayerController : MonoBehaviour
     private void Crouch()
     {
         isCrouch = !isCrouch;
+        theCrossHair.CrouchingAnimation(isCrouch);
         if (isCrouch)
         {
             applySpeed = crouchSpeed;
@@ -139,7 +169,7 @@ public class PlayerController : MonoBehaviour
         myRigid.velocity = transform.up * jumpForce;// (0, 1, 0)
     }
     
-    // 달리기
+    // 달리기 시도
     private void TryRun()
     {
         if (Input.GetKey(KeyCode.LeftShift))
@@ -155,6 +185,7 @@ public class PlayerController : MonoBehaviour
     private void RunningCancel()
     {
         isRun = false;
+        theCrossHair.RunningAnimation(isRun);
         applySpeed = walkSpeed;
 
     }
@@ -165,8 +196,10 @@ public class PlayerController : MonoBehaviour
         {
             Crouch();
         }
-
+        theGunController.CancelFineSight();
+        
         isRun = true;
+        theCrossHair.WalkingAnimation(isRun);
         applySpeed = runSpeed;
         
     }
