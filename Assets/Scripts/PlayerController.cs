@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
 
     private void MoveCheck()
     {
-        if (!isRun && !isCrouch)
+        if (!isRun && !isCrouch && isGround)
         {
             if (Vector3.Distance(lastPos, transform.position) >= 0.0001f)
             {
@@ -147,7 +147,8 @@ public class PlayerController : MonoBehaviour
     // 땅 확인(raycast)
     private void IsGround()
     {
-        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y * 1.1f);// bound.extents는 크기의 반이다
+        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.3f);// bound.extents는 크기의 반이다
+        theCrossHair.RunningAnimation(!isGround);
 
     }
 

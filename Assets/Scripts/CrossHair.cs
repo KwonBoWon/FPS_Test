@@ -27,6 +27,10 @@ public class CrossHair : MonoBehaviour
     {
         animator.SetBool("Crouching", _flag);
     }
+    public void FineSightAnimation(bool _flag)
+    {
+        animator.SetBool("FineSight", _flag);
+    }
     public void FireAnimation(){
         if(animator.GetBool("Walking")){
             animator.SetTrigger("Walk_Fire");
