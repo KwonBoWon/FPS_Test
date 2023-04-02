@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isRun && !isCrouch)
         {
-            if (Vector3.Distance(lastPos, transform.position) > 0.01f)
+            if (Vector3.Distance(lastPos, transform.position) >= 0.0001f)
             {
                 isWalk = true;
             }
@@ -98,6 +98,7 @@ public class PlayerController : MonoBehaviour
         MovePlayer();
         CameraRoatate();
         CharacterRotate();
+        MoveCheck();
     }
     //¾É±â ½Ãµµ
     private void TryCrouch()
@@ -199,7 +200,7 @@ public class PlayerController : MonoBehaviour
         theGunController.CancelFineSight();
         
         isRun = true;
-        theCrossHair.WalkingAnimation(isRun);
+        theCrossHair.RunningAnimation(isRun);
         applySpeed = runSpeed;
         
     }

@@ -12,6 +12,8 @@ public class CrossHair : MonoBehaviour
     // 크로스헤어 비활성화를 위한 부모 객체
     [SerializeField]
     private GameObject go_CrossHairHUD;
+    [SerializeField]
+    private GunController theGunContoller;
 
     public void WalkingAnimation(bool _flag)
     {
@@ -25,4 +27,35 @@ public class CrossHair : MonoBehaviour
     {
         animator.SetBool("Crouching", _flag);
     }
+    public void FireAnimation(){
+        if(animator.GetBool("Walking")){
+            animator.SetTrigger("Walk_Fire");
+        }
+        else if(animator.GetBool("Crouching")){
+            animator.SetTrigger("Crounch_Fire");
+        }
+        else{
+            animator.SetTrigger("Idle_Fire");
+        }
+    }
+    public float GetAccuracy(){
+         if(animator.GetBool("Walking")){
+            gunAccuracy = 0.08f;
+        }
+        else if(animator.GetBool("Crouching")){
+            gunAccuracy = 0.02f;
+        }
+        else if(theGunContoller.GetFineSightMode()){
+            gunAccuracy = 0.001f;
+        }
+        else{
+            gunAccuracy = 0.04f;
+        }
+
+        return gunAccuracy;
+    }
+
+
 }
+
+
