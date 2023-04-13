@@ -66,6 +66,12 @@ public class HandController : MonoBehaviour
         {
             if (CheckObject())
             {
+                if(hitInfo.transform.tag == "NPC")
+                {
+                    hitInfo.transform.GetComponent<Pig>().Damage(1, transform.position);
+                }
+
+
                 isSwing = false;
                 Debug.Log(hitInfo.transform.name);
             }
